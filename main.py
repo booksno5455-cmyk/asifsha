@@ -5,8 +5,7 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# Render Environment Variables (Render se apne aap token utha lega)
-PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
+# Render Environment Variables
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 
@@ -14,15 +13,13 @@ VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Custom AI System Instruction
 SYSTEM_PROMPT = """
 Tum instagram profile @mak_07s___ (Mr. Asif) ke smart AI assistant ho.
-
 Niyam:
-1. Pehchan: Tum kabhi bhi apna naam 'Gemini' ya 'Google AI' nahi bataoge. Agar koi puche ki tum kon ho, toh kaho ki tum Mr. Asif ke dwara banaye gaye unke smart AI assistant ho.
-2. Bhasha: User jis bhasha me message kare (Hindi, Hinglish, ya English), usi bhasha me bohot hi vinamrata aur doostana andaz me jawab do.
-3. Tarif aur jaankari: Mr. Asif aur unki instagram ID @mak_07s___ ki prashansa karo. Batao ki Asif bohot hi shandar content banate hain aur Lucknow se hain.
-4. Sahayata: User ke har sawal ka satik, chota aur upyogi jawab do.
+1. Pehchan: Tum kabhi bhi apna naam 'Gemini' ya 'Google AI' nahi bataoge. Kaho ki tum Mr. Asif ke dwara banaye gaye unke smart AI assistant ho.
+2. Bhasha: User jis bhasha me message kare, usi bhasha me vinamrata aur dostana andaz me jawab do.
+3. Tarif: Mr. Asif aur unki instagram ID @mak_07s___ ki prashansa karo ki woh shandar content banate hain aur Lucknow se hain.
+4. Sahayata: Har sawal ka satik, chota aur upyogi jawab do.
 """
 
 @app.route('/')
@@ -53,28 +50,15 @@ def webhook():
 
 @app.route('/auto-subscribe', methods=['GET'])
 def auto_subscribe():
-    user_token = os.getenv("PAGE_ACCESS_TOKEN")
-    if not user_token:
-        return {"error": "PAGE_ACCESS_TOKEN environment variable is missing!"}, 400
+    # Yahan apni Page ID aur Page Access Token seedha daal do taaki koi error na aaye!
+    page_id = "122105536371497407"  # Apni Page ID yahan likhein
+    token = "EAAPUb5qvgegBSpPVK9JsWZBp4HLpnZCV0EyWdlZAtYdPGAHtkotuX9d8yuAPUPF2KaLqdSRy8hCAIvXsiKldygsB1FFSH7ZCN2IBByqv2nFx7uJH85c5ASArhanZAcxfEPDCFBoLZCsJ8x912JqcLrKP4ZBRb6RGtNIhSUbCACMt1tkoZAgCuR8qXD0LrZAvrqspp891rgn9EfW7g0X1chCb1xy9ouiAE3f4ju5BgCi5t4ndbkrtM9nfUrBSenZC8P3w6vN4CMgucFkt0CRHy7Pm5Uszkt" # Apna Page Access Token yahan likhein
     
-    # 1. Fetch pages and their specific Page Access Tokens using User Token
-    accounts_url = f"https://graph.facebook.com/v26.0/me/accounts?access_token={user_token}"
-    res = requests.get(accounts_url).json()
-    
-    if "data" not in res or len(res["data"]) == 0:
-        return {"error": "No pages found. Make sure your token has page permissions!", "details": res}, 400
-        
-    # Get the correct Page ID and Page Access Token automatically
-    page_data = res["data"][0]
-    page_id = page_data["id"]
-    page_access_token = page_data["access_token"]
-    
-    # 2. Subscribe the Webhook using the correct Page Access Token
-    sub_url = f"https://graph.facebook.com/v26.0/{page_id}/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={page_access_token}"
+    sub_url = f"https://graph.facebook.com/v26.0/{page_id}/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={token}"
     res_sub = requests.post(sub_url).json()
     
     return {
-        "status": "Success",
+        "status": "Attempted",
         "page_id": page_id,
         "subscription_result": res_sub
     }
@@ -88,8 +72,8 @@ def get_gemini_reply(user_message):
         return "Namaste! Main abhi aapka message process nahi kar paa raha hoon."
 
 def send_instagram_message(recipient_id, text):
-    # Yeh automatically page token use kar lega agar hum chahein, par abhi ke liye ye theek hai
-    url = f"https://graph.facebook.com/v20.0/me/messages?access_token={PAGE_ACCESS_TOKEN}"
+    token = "EAAPUb5qvgegBSpPVK9JsWZBp4HLpnZCV0EyWdlZAtYdPGAHtkotuX9d8yuAPUPF2KaLqdSRy8hCAIvXsiKldygsB1FFSH7ZCN2IBByqv2nFx7uJH85c5ASArhanZAcxfEPDCFBoLZCsJ8x912JqcLrKP4ZBRb6RGtNIhSUbCACMt1tkoZAgCuR8qXD0LrZAvrqspp891rgn9EfW7g0X1chCb1xy9ouiAE3f4ju5BgCi5t4ndbkrtM9nfUrBSenZC8P3w6vN4CMgucFkt0CRHy7Pm5Uszkt"
+    url = f"https://graph.facebook.com/v20.0/me/messages?access_token={token}"
     headers = {"Content-Type": "application/json"}
     payload = {
         "recipient": {"id": recipient_id},
