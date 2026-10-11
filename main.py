@@ -53,21 +53,24 @@ def webhook():
 
 @app.route('/auto-subscribe', methods=['GET'])
 def auto_subscribe():
-    token = os.getenv("PAGE_ACCESS_TOKEN")
-    if not token:
+    user_token = os.getenv("PAGE_ACCESS_TOKEN")
+    if not user_token:
         return {"error": "PAGE_ACCESS_TOKEN environment variable is missing!"}, 400
     
-    # 1. Automatically fetch Page ID using the token
-    me_url = f"https://graph.facebook.com/v26.0/me?access_token={token}"
-    res_me = requests.get(me_url).json()
+    # 1. Fetch pages and their specific Page Access Tokens using User Token
+    accounts_url = f"https://graph.facebook.com/v26.0/me/accounts?access_token={user_token}"
+    res = requests.get(accounts_url).json()
     
-    if "id" not in res_me:
-        return {"error": "Could not fetch Page ID from Meta", "details": res_me}, 400
+    if "data" not in res or len(res["data"]) == 0:
+        return {"error": "No pages found. Make sure your token has page permissions!", "details": res}, 400
         
-    page_id = res_me["id"]
+    # Get the correct Page ID and Page Access Token automatically
+    page_data = res["data"][0]
+    page_id = page_data["id"]
+    page_access_token = page_data["access_token"]
     
-    # 2. Automatically Subscribe the Webhook
-    sub_url = f"https://graph.facebook.com/v26.0/me/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={token}"
+    # 2. Subscribe the Webhook using the correct Page Access Token
+    sub_url = f"https://graph.facebook.com/v26.0/{page_id}/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={page_access_token}"
     res_sub = requests.post(sub_url).json()
     
     return {
@@ -85,6 +88,7 @@ def get_gemini_reply(user_message):
         return "Namaste! Main abhi aapka message process nahi kar paa raha hoon."
 
 def send_instagram_message(recipient_id, text):
+    # Yeh automatically page token use kar lega agar hum chahein, par abhi ke liye ye theek hai
     url = f"https://graph.facebook.com/v20.0/me/messages?access_token={PAGE_ACCESS_TOKEN}"
     headers = {"Content-Type": "application/json"}
     payload = {
