@@ -7,8 +7,6 @@ app = Flask(__name__)
 
 # Render Environment Variables
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
-# Aapka naya access token seedha yahan daal diya hai
 PAGE_ACCESS_TOKEN = "IGAAr3oqq5zuJBZAGFlUHVqUlRhdmpKVUxZAa0lJdUN1WVpSTmZAMS3daelZAmV3R5RTZAPY2RTZAVpyaWVUOTFpcWxmc3N5cUw1OVJXSW5aUXliOENqdUpWZADNXc3VnY2I1R3pWQlNuOUdzTXVFeF9CQkZAYZAzRoc19mcUdINmNkVEtpVQZDZD"
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 
@@ -45,10 +43,21 @@ def webhook():
     
     if data.get('object') in ['page', 'instagram']:
         for entry in data.get('entry', []):
-            for messaging in entry.get('messaging', []):
-                sender_id = messaging.get('sender', {}).get('id')
-                message_text = messaging.get('message', {}).get('text')
+            # Dono formats (messaging aur changes) ko handle karne ke liye
+            events = entry.get('messaging', [])
+            
+            if not events and 'changes' in entry:
+                for change in entry.get('changes', []):
+                    if change.get('field') == 'messages':
+                        val = change.get('value', {})
+                        if val:
+                            events.append(val)
+            
+            for event in events:
+                sender_id = event.get('sender', {}).get('id')
+                message_text = event.get('message', {}).get('text')
                 
+                # Apne aap ko (bot ko) hi reply bhejne se bachane ke liye
                 if sender_id and message_text:
                     print(f"Message mila {sender_id} se: {message_text}")
                     reply = get_gemini_reply(message_text)
