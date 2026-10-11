@@ -25,6 +25,10 @@ Niyam:
 4. Sahayata: User ke har sawal ka satik, chota aur upyogi jawab do.
 """
 
+@app.route('/')
+def home():
+    return "Asif ka Instagram AI Bot Live Hai! 🚀", 200
+
 @app.route('/webhook', methods=['GET'])
 def verify():
     mode = request.args.get('hub.mode')
@@ -46,6 +50,31 @@ def webhook():
                     reply = get_gemini_reply(message_text)
                     send_instagram_message(sender_id, reply)
     return 'OK', 200
+
+@app.route('/auto-subscribe', methods=['GET'])
+def auto_subscribe():
+    token = os.getenv("PAGE_ACCESS_TOKEN")
+    if not token:
+        return {"error": "PAGE_ACCESS_TOKEN environment variable is missing!"}, 400
+    
+    # 1. Automatically fetch Page ID using the token
+    me_url = f"https://graph.facebook.com/v26.0/me?access_token={token}"
+    res_me = requests.get(me_url).json()
+    
+    if "id" not in res_me:
+        return {"error": "Could not fetch Page ID from Meta", "details": res_me}, 400
+        
+    page_id = res_me["id"]
+    
+    # 2. Automatically Subscribe the Webhook
+    sub_url = f"https://graph.facebook.com/v26.0/{page_id}/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={token}"
+    res_sub = requests.post(sub_url).json()
+    
+    return {
+        "status": "Success",
+        "page_id": page_id,
+        "subscription_result": res_sub
+    }
 
 def get_gemini_reply(user_message):
     try:
