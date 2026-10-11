@@ -67,7 +67,7 @@ def auto_subscribe():
     page_id = res_me["id"]
     
     # 2. Automatically Subscribe the Webhook
-    sub_url = f"https://graph.facebook.com/v26.0/{page_id}/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={token}"
+    sub_url = f"https://graph.facebook.com/v26.0/me/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={token}"
     res_sub = requests.post(sub_url).json()
     
     return {
