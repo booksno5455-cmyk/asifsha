@@ -52,8 +52,7 @@ def webhook():
 def auto_subscribe():
     # Yahan apni Page ID aur Page Access Token seedha daal do taaki koi error na aaye!
     page_id = "122105536371497407"  # Apni Page ID yahan likhein
-    token = "EAAPUb5qvgegBSpPVK9JsWZBp4HLpnZCV0EyWdlZAtYdPGAHtkotuX9d8yuAPUPF2KaLqdSRy8hCAIvXsiKldygsB1FFSH7ZCN2IBByqv2nFx7uJH85c5ASArhanZAcxfEPDCFBoLZCsJ8x912JqcLrKP4ZBRb6RGtNIhSUbCACMt1tkoZAgCuR8qXD0LrZAvrqspp891rgn9EfW7g0X1chCb1xy9ouiAE3f4ju5BgCi5t4ndbkrtM9nfUrBSenZC8P3w6vN4CMgucFkt0CRHy7Pm5Uszkt" # Apna Page Access Token yahan likhein
-    
+    token = "EAAUW7eZBNlTwBSh09ZBvZAnbmQl3ZAaXylF4y6xEjZCIAU6qTsGCcpu8aZAlMem9kZCHOsBUdrp1oQZCav0jM2XAKupi3YvWXUPC3fZCUoZBJPKwo4rJrtpXCyeK0kiHM9qz0TX2VHsHbs96s7q2mwn1agv9LWE5rr09mfjnbJ9H2G5NZATkjRb1RxPEUigJSgK5ge1vzIq8F4mu1qOZAS3fqaFuhuxjP8GlcDIXQT8qzISZBblhspfZC2jf4fRasQaiVkaAbbp7xOBuFHeVnD9BIZD"    
     sub_url = f"https://graph.facebook.com/v26.0/{page_id}/subscribed_apps?subscribed_fields=messages,messaging_postbacks&access_token={token}"
     res_sub = requests.post(sub_url).json()
     
@@ -72,7 +71,7 @@ def get_gemini_reply(user_message):
         return "Namaste! Main abhi aapka message process nahi kar paa raha hoon."
 
 def send_instagram_message(recipient_id, text):
-    token = "EAAPUb5qvgegBSpPVK9JsWZBp4HLpnZCV0EyWdlZAtYdPGAHtkotuX9d8yuAPUPF2KaLqdSRy8hCAIvXsiKldygsB1FFSH7ZCN2IBByqv2nFx7uJH85c5ASArhanZAcxfEPDCFBoLZCsJ8x912JqcLrKP4ZBRb6RGtNIhSUbCACMt1tkoZAgCuR8qXD0LrZAvrqspp891rgn9EfW7g0X1chCb1xy9ouiAE3f4ju5BgCi5t4ndbkrtM9nfUrBSenZC8P3w6vN4CMgucFkt0CRHy7Pm5Uszkt"
+    token = "EAAUW7eZBNlTwBSh09ZBvZAnbmQl3ZAaXylF4y6xEjZCIAU6qTsGCcpu8aZAlMem9kZCHOsBUdrp1oQZCav0jM2XAKupi3YvWXUPC3fZCUoZBJPKwo4rJrtpXCyeK0kiHM9qz0TX2VHsHbs96s7q2mwn1agv9LWE5rr09mfjnbJ9H2G5NZATkjRb1RxPEUigJSgK5ge1vzIq8F4mu1qOZAS3fqaFuhuxjP8GlcDIXQT8qzISZBblhspfZC2jf4fRasQaiVkaAbbp7xOBuFHeVnD9BIZD"
     url = f"https://graph.facebook.com/v20.0/me/messages?access_token={token}"
     headers = {"Content-Type": "application/json"}
     payload = {
