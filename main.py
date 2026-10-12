@@ -10,9 +10,9 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN", "").strip()
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 
-# Gemini AI Setup (Stable model name)
+# Gemini AI Setup (Updated to the latest correct gemini-2.0-flash model)
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.0-flash')
 
 SYSTEM_PROMPT = """
 Tum instagram profile @mak_07s___ (Mr. Asif) ke smart AI assistant ho.
