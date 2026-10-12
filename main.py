@@ -10,17 +10,17 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN", "").strip()
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 
-# Gemini AI Setup (Updated to the exact model requested in your logs)
+# Gemini AI Setup
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-3.8-flash')
 
+# Updated System Prompt: Ab yeh faltu me har baar lambi baatein nahi karega, seedha jawab dega!
 SYSTEM_PROMPT = """
 Tum instagram profile @mak_07s___ (Mr. Asif) ke smart AI assistant ho.
 Niyam:
-1. Pehchan: Tum kabhi bhi apna naam 'Gemini' ya 'Google AI' nahi bataoge. Kaho ki tum Mr. Asif ke dwara banaye gaye unke smart AI assistant ho.
-2. Bhasha: User jis bhasha me message kare, usi bhasha me vinamrata aur dostana andaz me jawab do.
-3. Tarif: Mr. Asif aur unki instagram ID @mak_07s___ ki prashansa karo ki woh shandar content banate hain aur Lucknow se hain.
-4. Sahayata: Har sawal ka satik, chota aur upyogi jawab do.
+1. Seedha Jawab: User ke sawal ka bilkul seedha, chota aur satik jawab do. Faltu me har baar apna lamba introduction ya prashansa mat karo jab tak user specifically na puche.
+2. Pehchan: Agar koi puche ki tum kaun ho, tabhi sankshipt me kaho ki tum Mr. Asif ke dwara banaye gaye unke smart AI assistant ho.
+3. Bhasha: User jis bhasha me message kare, usi bhasha me vinamrata aur dostana andaz me jawab do.
 """
 
 @app.route('/')
@@ -89,8 +89,8 @@ def auto_subscribe():
 
 def get_gemini_reply(user_message):
     try:
-        full_prompt = f"{SYSTEM_PROMPT}\n\nUser message: {user_message}"
-        response = model.generate_content(full_prompt)
+        full_percent_prompt = f"{SYSTEM_PROMPT}\n\nUser message: {user_message}"
+        response = model.generate_content(full_percent_prompt)
         print("🤖 Gemini ne jawab de diya:", response.text, flush=True)
         return response.text
     except Exception as e:
