@@ -5,12 +5,12 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# Render Environment Variables
+# Render Environment Variables se uthayega taaki token me koi error na aaye
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-PAGE_ACCESS_TOKEN = "IGAAr3oqq5zuJBZAGFlUHVqUlRhdmpKVUxZAa0lJdUN1WVpSTmZAMS3daelZAmV3R5RTZAPY2RTZAVpyaWVUOTFpcWxmc3N5cUw1OVJXSW5aUXliOENqdUpWZADNXc3VnY2I1R3pWQlNuOUdzTXVFeF9CQkZAYZAzRoc19mcUdINmNkVEtpVQZDZD"
+PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 
-# Gemini AI Setup
+# Gemini AI Setup (Model name updated)
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
@@ -65,6 +65,7 @@ def webhook():
                         
                     message_text = messaging.get('message', {}).get('text')
                     
+                    # Agar message user ka hai (apna khud ka echo message nahi hai)
                     if sender_id and message_text:
                         print(f"✅ Message mil gaya! Sender ID: {sender_id}, Text: {message_text}", flush=True)
                         reply = get_gemini_reply(message_text)
