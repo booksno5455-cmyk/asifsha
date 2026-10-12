@@ -14,7 +14,7 @@ VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-3.8-flash')
 
-# Updated System Prompt: Ab yeh faltu me har baar lambi baatein nahi karega, seedha jawab dega!
+# Updated System Prompt
 SYSTEM_PROMPT = """
 Tum instagram profile @mak_07s___ (Mr. Asif) ke smart AI assistant ho.
 Niyam:
@@ -98,7 +98,8 @@ def get_gemini_reply(user_message):
         return "Namaste! Main abhi aapka message process nahi kar paa raha hoon."
 
 def send_instagram_message(recipient_id, text):
-    url = f"https://graph.facebook.com/v26.0/me/messages?access_token={PAGE_ACCESS_TOKEN}"
+    page_id = "122105536371497407"
+    url = f"https://graph.facebook.com/v26.0/{page_id}/messages?access_token={PAGE_ACCESS_TOKEN}"
     headers = {"Content-Type": "application/json"}
     payload = {
         "recipient": {"id": recipient_id},
