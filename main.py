@@ -38,13 +38,12 @@ def verify():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    # Sabse pehle dekhenge ki Meta se asli data kya aa raha hai
     raw_data = request.data.decode('utf-8')
-    print("🔥 RAW INSTAGRAM DATA:", raw_data)
+    print("🔥 RAW INSTAGRAM DATA:", raw_data, flush=True)
     
     data = request.get_json(silent=True)
     if not data:
-        print("⚠️ JSON parse nahi ho paya!")
+        print("⚠️ JSON parse nahi ho paya!", flush=True)
         return 'OK', 200
     
     try:
@@ -52,7 +51,6 @@ def webhook():
             for entry in data.get('entry', []):
                 messaging_events = entry.get('messaging', [])
                 
-                # Agar messaging khali hai toh changes check karo
                 if not messaging_events and 'changes' in entry:
                     for change in entry.get('changes', []):
                         if change.get('field') == 'messages':
@@ -62,20 +60,19 @@ def webhook():
                 
                 for messaging in messaging_events:
                     sender_id = messaging.get('sender', {}).get('id')
-                    # Kuch formats me 'sender' ki jagah 'from' hota hai
                     if not sender_id:
                         sender_id = messaging.get('from', {}).get('id')
                         
                     message_text = messaging.get('message', {}).get('text')
                     
                     if sender_id and message_text:
-                        print(f"✅ Message mil gaya! Sender ID: {sender_id}, Text: {message_text}")
+                        print(f"✅ Message mil gaya! Sender ID: {sender_id}, Text: {message_text}", flush=True)
                         reply = get_gemini_reply(message_text)
                         send_instagram_message(sender_id, reply)
                     else:
-                        print("⚠️ Sender ID ya Message Text nahi mila is event me.")
+                        print("⚠️ Sender ID ya Message Text nahi mila is event me.", flush=True)
     except Exception as e:
-        print("❌ Webhook ke andar error aa gaya:", e)
+        print("❌ Webhook ke andar error aa gaya:", e, flush=True)
         
     return 'OK', 200
 
@@ -94,10 +91,10 @@ def get_gemini_reply(user_message):
     try:
         full_prompt = f"{SYSTEM_PROMPT}\n\nUser message: {user_message}"
         response = model.generate_content(full_prompt)
-        print("🤖 Gemini ne jawab de diya:", response.text)
+        print("🤖 Gemini ne jawab de diya:", response.text, flush=True)
         return response.text
     except Exception as e:
-        print("❌ Gemini Error:", e)
+        print("❌ Gemini Error:", e, flush=True)
         return "Namaste! Main abhi aapka message process nahi kar paa raha hoon."
 
 def send_instagram_message(recipient_id, text):
@@ -108,7 +105,7 @@ def send_instagram_message(recipient_id, text):
         "message": {"text": text}
     }
     response = requests.post(url, json=payload, headers=headers)
-    print("📤 Instagram Send Response:", response.json())
+    print("📤 Instagram Send Response:", response.json(), flush=True)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
