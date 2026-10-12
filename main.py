@@ -5,14 +5,14 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# Render Environment Variables se uthayega taaki token me koi error na aaye
+# Render Environment Variables se uthayega taaki token safe rahe
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 
-# Gemini AI Setup (Model name updated)
+# Gemini AI Setup (Updated to latest gemini-2.0-flash model)
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.0-flash')
 
 SYSTEM_PROMPT = """
 Tum instagram profile @mak_07s___ (Mr. Asif) ke smart AI assistant ho.
@@ -65,7 +65,6 @@ def webhook():
                         
                     message_text = messaging.get('message', {}).get('text')
                     
-                    # Agar message user ka hai (apna khud ka echo message nahi hai)
                     if sender_id and message_text:
                         print(f"✅ Message mil gaya! Sender ID: {sender_id}, Text: {message_text}", flush=True)
                         reply = get_gemini_reply(message_text)
