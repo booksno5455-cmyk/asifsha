@@ -5,14 +5,14 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# Render Environment Variables se uthayega taaki token safe rahe
+# Render Environment Variables se uthayega taaki token me koi error na aaye
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 PAGE_ACCESS_TOKEN = os.getenv("PAGE_ACCESS_TOKEN")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "my_secret_token_123")
 
-# Gemini AI Setup (Updated to latest gemini-2.0-flash model)
+# Gemini AI Setup (Updated to gemini-2.5-flash as requested by the error log)
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-2.0-flash')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 SYSTEM_PROMPT = """
 Tum instagram profile @mak_07s___ (Mr. Asif) ke smart AI assistant ho.
